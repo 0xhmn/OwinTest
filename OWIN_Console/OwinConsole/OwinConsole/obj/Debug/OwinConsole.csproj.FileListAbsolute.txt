@@ -1,1 +1,13 @@
 E:\GitHub\hmny_git\OWIN_test\OWIN_Console\OwinConsole\OwinConsole\bin\Debug\OwinConsole.exe.config
+E:\GitHub\hmny_git\OWIN_test\OWIN_Console\OwinConsole\OwinConsole\bin\Debug\OwinConsole.exe
+E:\GitHub\hmny_git\OWIN_test\OWIN_Console\OwinConsole\OwinConsole\bin\Debug\OwinConsole.pdb
+E:\GitHub\hmny_git\OWIN_test\OWIN_Console\OwinConsole\OwinConsole\bin\Debug\Microsoft.Owin.dll
+E:\GitHub\hmny_git\OWIN_test\OWIN_Console\OwinConsole\OwinConsole\bin\Debug\Microsoft.Owin.Host.HttpListener.dll
+E:\GitHub\hmny_git\OWIN_test\OWIN_Console\OwinConsole\OwinConsole\bin\Debug\Microsoft.Owin.Hosting.dll
+E:\GitHub\hmny_git\OWIN_test\OWIN_Console\OwinConsole\OwinConsole\bin\Debug\Owin.dll
+E:\GitHub\hmny_git\OWIN_test\OWIN_Console\OwinConsole\OwinConsole\bin\Debug\Microsoft.Owin.xml
+E:\GitHub\hmny_git\OWIN_test\OWIN_Console\OwinConsole\OwinConsole\bin\Debug\Microsoft.Owin.Host.HttpListener.xml
+E:\GitHub\hmny_git\OWIN_test\OWIN_Console\OwinConsole\OwinConsole\bin\Debug\Microsoft.Owin.Hosting.xml
+E:\GitHub\hmny_git\OWIN_test\OWIN_Console\OwinConsole\OwinConsole\obj\Debug\OwinConsole.csprojResolveAssemblyReference.cache
+E:\GitHub\hmny_git\OWIN_test\OWIN_Console\OwinConsole\OwinConsole\obj\Debug\OwinConsole.exe
+E:\GitHub\hmny_git\OWIN_test\OWIN_Console\OwinConsole\OwinConsole\obj\Debug\OwinConsole.pdb

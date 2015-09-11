@@ -20,8 +20,9 @@ namespace OwinConsole
     {
         static void Main(string[] args)
         {
-            // WebApp.Start<>("http://localhost:8080");
-
+            WebApp.Start<Startup>("http://localhost:8080");
+            Console.WriteLine("server started");
+            Console.ReadLine();
         }
 
 
@@ -32,9 +33,11 @@ namespace OwinConsole
     {
         public void Configuration(IAppBuilder app)
         {
-
+            var middleware = new Func<AppFunc, AppFunc>(MyMiddleWare);
+            app.Use(middleware);
         }
 
+        // middleware signature: Func<AppFunc, AppFunc>
         public AppFunc MyMiddleWare(AppFunc next)
         {
             AppFunc appFunc = async (IDictionary<string, object> environment) =>
@@ -52,14 +55,5 @@ namespace OwinConsole
             return appFunc;
         }
 
-        public async Task Invoke(IDictionary<string, object> environment)
-        {
-            var response = environment["owin.ResponseBody"] as Stream;
-            using (var writer = new StreamWriter(response))
-            {
-                await writer.WriteAsync("this is from the second middleware without lambda");
-            }
-
-        }
     }
 }
