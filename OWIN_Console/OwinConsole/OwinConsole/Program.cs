@@ -15,7 +15,9 @@ namespace OwinConsole
     // alias for owin AppFunc
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-
+    /// <summary>
+    /// http://typecastexception.com/post/2015/01/04/ASPNET-Understanding-OWIN-Katana-and-the-Middleware-Pipeline.aspx#What-is-OWIN--and-Why-Do-I-Care-
+    /// </summary>
     public class Program
     {
         static void Main(string[] args)
@@ -53,6 +55,11 @@ namespace OwinConsole
                 await next.Invoke(environment);
             };
             return appFunc;
+        }
+
+        // add another middleware
+        public AppFunc MyOtherMiddleWare(AppFunc next)
+        {
         }
 
     }
