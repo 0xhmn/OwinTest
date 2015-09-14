@@ -17,10 +17,6 @@ namespace OwinConsole
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     /// <summary>
-    /// part two:
-    /// using Katana:
-    /// IOwinContext
-    /// OwinContext
     /// http://typecastexception.com/post/2015/01/04/ASPNET-Understanding-OWIN-Katana-and-the-Middleware-Pipeline.aspx#What-is-OWIN--and-Why-Do-I-Care-
     /// </summary>
     public class Program
@@ -41,22 +37,45 @@ namespace OwinConsole
     {
         public void Configuration(IAppBuilder app)
         {
-            var middleware = new Func<AppFunc, AppFunc>(MyMiddleWare);
-            app.Use(middleware);
+            app.Use<MyMiddlewareComponent>();
+            app.Use<MyOtherMiddlewareComponent>();
         }
 
-        // middleware signature: Func<AppFunc, AppFunc>
-        public AppFunc MyMiddleWare(AppFunc next)
+
+    }
+
+    public class MyMiddlewareComponent
+    {
+        private AppFunc _next;
+
+        public MyMiddlewareComponent(AppFunc next)
         {
-            AppFunc appFunc = async (IDictionary<string, object> environment) =>
-            {
-                IOwinContext context = new OwinContext(environment);
-                await context.Response.WriteAsync("<h1>using IOwinContext to send the response</h1>");
-                await next.Invoke(environment);
-            };
-            return appFunc;
+            _next = next;
         }
 
+        public async Task Invoke(IDictionary<string, object> environment)
+        {
+            IOwinContext context = new OwinContext(environment);
+            await context.Response.WriteAsync("<p>Hello World</p>");
+            await _next.Invoke(environment);
+        }
 
+    }
+
+    public class MyOtherMiddlewareComponent
+    {
+        AppFunc _next;
+
+        public MyOtherMiddlewareComponent(AppFunc next)
+        {
+            _next = next;
+        }
+
+        public async Task Invoke(IDictionary<string, object> environment)
+        {
+            IOwinContext context = new OwinContext(environment);
+            await context.Response.WriteAsync("<p>from second middleware</p>");
+            await _next.Invoke(environment);
+        }
     }
 }
