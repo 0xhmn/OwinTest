@@ -37,11 +37,23 @@ namespace OwinConsole
     {
         public void Configuration(IAppBuilder app)
         {
+            app.UseMyMiddlewareComponent();
+            app.UseMyOtherMiddlewareComponent();
+        }
+    }
+
+    // static extension class/method
+    public static class AppBuilderExtensions
+    {
+        public static void UseMyMiddlewareComponent(this IAppBuilder app)
+        {
             app.Use<MyMiddlewareComponent>();
-            app.Use<MyOtherMiddlewareComponent>();
         }
 
-
+        public static void UseMyOtherMiddlewareComponent(this IAppBuilder app)
+        {
+            app.Use<MyOtherMiddlewareComponent>();
+        }
     }
 
     public class MyMiddlewareComponent
