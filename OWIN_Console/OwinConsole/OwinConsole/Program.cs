@@ -32,8 +32,6 @@ namespace OwinConsole
             Console.Write("Listening to http://localhost:8080");
             Console.ReadLine();
         }
-
-
     }
 
     // owin startup
@@ -42,9 +40,7 @@ namespace OwinConsole
         public void Configuration(IAppBuilder app)
         {
             var middleware = new Func<AppFunc, AppFunc>(MyMiddleWare);
-            var otherMiddleware = new Func<AppFunc, AppFunc>(MyOtherMiddleWare);
             app.Use(middleware);
-            app.Use(otherMiddleware);
         }
 
         // middleware signature: Func<AppFunc, AppFunc>
@@ -52,35 +48,11 @@ namespace OwinConsole
         {
             AppFunc appFunc = async (IDictionary<string, object> environment) =>
             {
-                // do something with incomming request
-                var response = environment["owin.ResponseBody"] as Stream;
-                using (var writer = new StreamWriter(response))
-                {
-                    await writer.WriteAsync(("<h1>Hello from middleware</h1>"));
-                }
-                // Call next middleware in chain
-                // middlewares are responsible for calling eachother
+                IOwinContext context = new OwinContext(environment);
+                await context.Response.WriteAsync("<h1>using IOwinContext to send the response</h1>");
                 await next.Invoke(environment);
             };
             return appFunc;
         }
-
-        // add another middleware
-        public AppFunc MyOtherMiddleWare(AppFunc next)
-        {
-            AppFunc appfunc = async (IDictionary<string, object> environment) =>
-            {
-                var response = environment["owin.ResponseBody"] as Stream;
-                using (var writer = new StreamWriter(response))
-                {
-                    await writer.WriteAsync(("<p>anoter res from second middleware</p>"));
-                    // we should call next middleware in chain
-                    await next.Invoke(environment);
-                }
-            };
-
-            return appfunc;
-        }
-
     }
 }
