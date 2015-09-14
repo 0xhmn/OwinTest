@@ -13,6 +13,7 @@ using Owin;
 namespace OwinConsole
 {
     // alias for owin AppFunc
+    // getting a dictionary of <string, object> and returning a task
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     /// <summary>
@@ -24,6 +25,7 @@ namespace OwinConsole
         {
             WebApp.Start<Startup>("http://localhost:8080");
             Console.WriteLine("server started");
+            Console.Write("Listening to http://localhost:8080");
             Console.ReadLine();
         }
 
@@ -36,7 +38,9 @@ namespace OwinConsole
         public void Configuration(IAppBuilder app)
         {
             var middleware = new Func<AppFunc, AppFunc>(MyMiddleWare);
+            var otherMiddleware = new Func<AppFunc, AppFunc>(MyOtherMiddleWare);
             app.Use(middleware);
+            app.Use(otherMiddleware);
         }
 
         // middleware signature: Func<AppFunc, AppFunc>
@@ -60,6 +64,18 @@ namespace OwinConsole
         // add another middleware
         public AppFunc MyOtherMiddleWare(AppFunc next)
         {
+            AppFunc appfunc = async (IDictionary<string, object> environment) =>
+            {
+                var response = environment["owin.ResponseBody"] as Stream;
+                using (var writer = new StreamWriter(response))
+                {
+                    await writer.WriteAsync(("<p>anoter res from second middleware</p>"));
+                    // we should call next middleware in chain
+                    await next.Invoke(environment);
+                }
+            };
+
+            return appfunc;
         }
 
     }
