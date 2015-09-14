@@ -38,7 +38,10 @@ namespace OwinConsole
         public void Configuration(IAppBuilder app)
         {
             app.UseMyMiddlewareComponent();
-            app.UseMyOtherMiddlewareComponent("greeting test");
+
+            // setting up configUption
+            var options = new MyOtherMiddlewareComponentOptions("greeting text test","Hooman", true);
+            app.UseMyOtherMiddlewareComponent(options);
         }
     }
 
@@ -50,9 +53,9 @@ namespace OwinConsole
             app.Use<MyMiddlewareComponent>();
         }
 
-        public static void UseMyOtherMiddlewareComponent(this IAppBuilder app, string greeting)
+        public static void UseMyOtherMiddlewareComponent(this IAppBuilder app, MyOtherMiddlewareComponentOptions configOptions)
         {
-            app.Use<MyOtherMiddlewareComponent>(greeting);
+            app.Use<MyOtherMiddlewareComponent>(configOptions);
         }
     }
 
@@ -81,10 +84,10 @@ namespace OwinConsole
         // add a member to hold greeting
         string _greeting;
 
-        public MyOtherMiddlewareComponent(AppFunc next, string greeting)
+        public MyOtherMiddlewareComponent(AppFunc next, MyOtherMiddlewareComponentOptions options)
         {
             _next = next;
-            _greeting = greeting;
+            _greeting = options.GetGreeting();
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
@@ -92,6 +95,35 @@ namespace OwinConsole
             IOwinContext context = new OwinContext(environment);
             await context.Response.WriteAsync(string.Format("<p>{0}</p>", _greeting));
             await _next.Invoke(environment);
+        }
+    }
+
+    // defining config options for MyOtherMiddlewareComponent
+    public class MyOtherMiddlewareComponentOptions
+    {
+        private string _greetingFormat = "{0} from {1}{2}";
+
+        public MyOtherMiddlewareComponentOptions(string greeting, string greeter, bool? includeDate)
+        {
+            GreetingText = greeting;
+            Greeter = greeting;
+            Date = DateTime.Now;
+            IncludeDate = true;
+        }
+        public string GreetingText { get; set; }
+        public string Greeter { get; set; }
+        public DateTime Date { get; set; }
+
+        public bool IncludeDate { get; set; }
+
+        public string GetGreeting()
+        {
+            string DateText = "";
+            if (IncludeDate)
+            {
+                DateText = string.Format(" on {0}", Date.ToShortDateString());
+            }
+            return string.Format(_greetingFormat, GreetingText, Greeter, DateText);
         }
     }
 }
