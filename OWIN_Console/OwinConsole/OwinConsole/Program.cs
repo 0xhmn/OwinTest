@@ -38,7 +38,7 @@ namespace OwinConsole
         public void Configuration(IAppBuilder app)
         {
             app.UseMyMiddlewareComponent();
-            app.UseMyOtherMiddlewareComponent();
+            app.UseMyOtherMiddlewareComponent("greeting test");
         }
     }
 
@@ -50,9 +50,9 @@ namespace OwinConsole
             app.Use<MyMiddlewareComponent>();
         }
 
-        public static void UseMyOtherMiddlewareComponent(this IAppBuilder app)
+        public static void UseMyOtherMiddlewareComponent(this IAppBuilder app, string greeting)
         {
-            app.Use<MyOtherMiddlewareComponent>();
+            app.Use<MyOtherMiddlewareComponent>(greeting);
         }
     }
 
@@ -78,15 +78,19 @@ namespace OwinConsole
     {
         AppFunc _next;
 
-        public MyOtherMiddlewareComponent(AppFunc next)
+        // add a member to hold greeting
+        string _greeting;
+
+        public MyOtherMiddlewareComponent(AppFunc next, string greeting)
         {
             _next = next;
+            _greeting = greeting;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
             IOwinContext context = new OwinContext(environment);
-            await context.Response.WriteAsync("<p>from second middleware</p>");
+            await context.Response.WriteAsync(string.Format("<p>{0}</p>", _greeting));
             await _next.Invoke(environment);
         }
     }
